@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException , InternalServerErrorException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Contact } from './contact.entity';
@@ -12,34 +12,53 @@ export class ContactsService {
   ) {}
 
   async findAll(): Promise<Contact[]> {
-    return this.contactRepository.find();
+    try {
+      return await this.contactRepository.find();
+    } catch (error) {
+      throw new InternalServerErrorException('Une erreur est survenue lors de la récupération des contacts.');
+    }
   }
 
   async findByName(name: string): Promise<Contact[]> {
-    return this.contactRepository.find({ where: { nom: name } });
+    try {
+      return await this.contactRepository.find({ where: { nom: name } });
+    } catch (error) {
+      throw new InternalServerErrorException('Une erreur est survenue lors de la recherche des contacts.');
+    }
   }
 
   async create(createContactDto: CreateContactDto): Promise<Contact> {
-    const existingContact = await this.contactRepository.findOne({
-      where: { email: createContactDto.email },
-    });
+    try {
+      const existingContact = await this.contactRepository.findOne({
+        where: { email: createContactDto.email },
+      });
 
-    if (existingContact) {
-      throw new ConflictException('Un contact avec cet email existe déjà.');
+      if (existingContact) {
+        throw new ConflictException('Un contact avec cet email existe déjà.');
+      }
+
+      const contact = this.contactRepository.create(createContactDto);
+      return await this.contactRepository.save(contact);
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Une erreur est survenue lors de la création du contact.');
     }
-
-    const contact = this.contactRepository.create(createContactDto);
-    return this.contactRepository.save(contact);
   }
 
   async remove(id: number): Promise<void> {
-    const contact = await this.contactRepository.findOne({ where: { id } });
+    try {
+      const contact = await this.contactRepository.findOne({ where: { id } });
 
-    if (!contact) {
-      throw new NotFoundException('Contact introuvable.');
+      if (!contact) {
+        throw new NotFoundException('Contact introuvable.');
+      }
+
+      await this.contactRepository.delete(id);
+    } catch (error) {
+      throw new InternalServerErrorException('Une erreur est survenue lors de la suppression du contact.');
     }
-
-    await this.contactRepository.delete(id);
   }
   async findPaginated(page: number, limit: number, nom?: string): Promise<{ data: Contact[]; total: number }> {
     const queryBuilder = this.contactRepository.createQueryBuilder('contact');
