@@ -63,15 +63,14 @@ export class ContactsService {
   async findPaginated(page: number, limit: number, nom?: string): Promise<{ data: Contact[]; total: number }> {
     const queryBuilder = this.contactRepository.createQueryBuilder('contact');
   
-    // Add filtering by 'nom' if provided
     if (nom) {
       queryBuilder.where('contact.nom LIKE :nom', { nom: `%${nom}%` });
     }
   
     const [data, total] = await queryBuilder
-      .skip((page - 1) * limit) // Skip records for previous pages
-      .take(limit) // Limit the number of records returned
-      .getManyAndCount(); // Get data and total count
+      .skip((page - 1) * limit) 
+      .take(limit) 
+      .getManyAndCount(); 
   
     return { data, total };
   }
@@ -82,7 +81,6 @@ export class ContactsService {
       throw new NotFoundException('Contact introuvable.');
     }
   
-    // Merge the existing contact with the new data
     const updatedContact = Object.assign(contact, updateData);
   
     return await this.contactRepository.save(updatedContact);

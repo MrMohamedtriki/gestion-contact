@@ -7,7 +7,7 @@ const mockQueryBuilder = {
   where: jest.fn().mockReturnThis(),
   skip: jest.fn().mockReturnThis(),
   take: jest.fn().mockReturnThis(),
-  getManyAndCount: jest.fn().mockResolvedValue([[], 0]), // Mock empty results
+  getManyAndCount: jest.fn().mockResolvedValue([[], 0]), 
 };
 const mockRepository = {
   createQueryBuilder: jest.fn(() => mockQueryBuilder),
@@ -44,10 +44,10 @@ describe('ContactsService', () => {
     const mockContacts = [
       { id: 1, nom: 'John Doe', email: 'john@example.com', telephone: '12345678' },
     ];
-    mockQueryBuilder.getManyAndCount.mockResolvedValue([mockContacts, 1]); // Return mock data
+    mockQueryBuilder.getManyAndCount.mockResolvedValue([mockContacts, 1]); 
 
     const result = await service.findPaginated(1, 5);
-    expect(result).toEqual({ data: mockContacts, total: 1 }); // Expect the correct result
+    expect(result).toEqual({ data: mockContacts, total: 1 }); 
     expect(mockQueryBuilder.skip).toHaveBeenCalledWith(0);
     expect(mockQueryBuilder.take).toHaveBeenCalledWith(5);
   });

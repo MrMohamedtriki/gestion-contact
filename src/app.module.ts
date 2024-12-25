@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Loads environment variables from the `.env` file
+    ConfigModule.forRoot(), 
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -17,10 +17,10 @@ import { AppService } from './app.service';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      autoLoadEntities: true, // Automatically load entities
-      synchronize: true, // Automatically sync schema; use only in development!
+      autoLoadEntities: true, 
+      synchronize: true, 
     }),
-    ContactsModule, // Import the ContactsModule
+    ContactsModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -14,7 +14,7 @@ import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './create-contact.dto';
 import { ApiTags, ApiResponse, ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
 
-@ApiTags('Contacts') // Groups the endpoints under the "Contacts" section in Swagger
+@ApiTags('Contacts') 
 @Controller('contacts')
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
@@ -54,7 +54,7 @@ export class ContactsController {
   }
   
 @Put(':id')
-@UsePipes(new ValidationPipe()) // Validate fields in CreateContactDto
+@UsePipes(new ValidationPipe()) 
 @ApiParam({ name: 'id', description: 'ID du contact à mettre à jour' })
 @ApiBody({ type: CreateContactDto, description: 'Données pour mettre à jour un contact existant' })
 @ApiResponse({ status: 200, description: 'Contact mis à jour avec succès.' })

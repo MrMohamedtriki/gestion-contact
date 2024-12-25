@@ -33,9 +33,9 @@ describe('ContactsController', () => {
     const mockResult = { data: [], total: 0 };
     mockService.findPaginated.mockResolvedValue(mockResult);
 
-    const result = await controller.findPaginated(1, 5, 'John'); // Pass 'John' as nom
+    const result = await controller.findPaginated(1, 5, 'John'); 
     expect(result).toEqual(mockResult);
-    expect(service.findPaginated).toHaveBeenCalledWith(1, 5, 'John'); // Expect 'John' to be passed
+    expect(service.findPaginated).toHaveBeenCalledWith(1, 5, 'John'); 
   });
 
 
