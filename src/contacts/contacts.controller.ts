@@ -8,6 +8,7 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
+  Put,
 } from '@nestjs/common';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './create-contact.dto';
@@ -51,4 +52,21 @@ export class ContactsController {
   async remove(@Param('id') id: number) {
     return this.contactsService.remove(id);
   }
+  
+@Put(':id')
+@UsePipes(new ValidationPipe()) // Validate fields in CreateContactDto
+@ApiParam({ name: 'id', description: 'ID du contact à mettre à jour' })
+@ApiBody({ type: CreateContactDto, description: 'Données pour mettre à jour un contact existant' })
+@ApiResponse({ status: 200, description: 'Contact mis à jour avec succès.' })
+@ApiResponse({ status: 400, description: 'Données invalides.' })
+@ApiResponse({ status: 404, description: 'Contact introuvable.' })
+@ApiResponse({ status: 500, description: 'Erreur interne.' })
+async update(
+  @Param('id') id: number,
+  @Body() updateData: Partial<CreateContactDto>,
+) {
+  return this.contactsService.update(id, updateData);
+}
+
+
 }

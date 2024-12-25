@@ -75,6 +75,19 @@ export class ContactsService {
   
     return { data, total };
   }
+  async update(id: number, updateData: Partial<CreateContactDto>): Promise<Contact> {
+    const contact = await this.contactRepository.findOne({ where: { id } });
+  
+    if (!contact) {
+      throw new NotFoundException('Contact introuvable.');
+    }
+  
+    // Merge the existing contact with the new data
+    const updatedContact = Object.assign(contact, updateData);
+  
+    return await this.contactRepository.save(updatedContact);
+  }
+  
   
   
 }
